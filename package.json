@@ -1,0 +1,78 @@
+{
+  "name": "i18n-Lens",
+  "displayName": "i18n-Lens",
+  "description": "I18n-Lens is a VS Code extension which helps you develop with i18n library.",
+  "publisher": "naver-vision-application-fe",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naver/i18n-Lens"
+  },
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.72.0"
+  },
+  "icon": "screenshots/icon.png",
+  "license": "LICENSE.md",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:vue",
+    "onLanguage:html",
+    "onLanguage:pug",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "i18n-Lens.translatorFunctionName": {
+          "type": "string",
+          "description": "The name of translator function.",
+          "default": "t"
+        },
+        "i18n-Lens.localeDirectoryPath": {
+          "type": "string",
+          "description": "Language translation file directory path",
+          "default": "/**/locales"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.72.0",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "@vscode/test-electron": "^2.1.5",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "mocha": "^10.0.0",
+    "prettier": "^2.7.1",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "fast-glob": "^3.2.12",
+    "fs-extra": "^10.1.0"
+  }
+}

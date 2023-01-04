@@ -1,0 +1,17 @@
+{
+  "version": "2022-10-23 19:31:19",
+  "locale": "ja",
+  "setting": "設定.",
+  "ok": "確認.",
+  "cancel": "キャンセル",
+  "yes": "はい",
+  "no": "いいえ",
+  "apply": "適用.",
+  "select": "選択",
+  "reset": "初期化",
+  "save.completed": "保存しました。",
+  "welcome": "ようこそ。{name}さん",
+  "aaaaaaaaaa.bbbbbbbbb.ccccccccc.ddddddddd.eeeeeeee.fffffffffff.gggggggggggg.hhhhhhhhhhhh.iiiiiiiiiii": "長い文字列",
+  "next.line": "数\n行\nです。",
+  "accounting.rule": "{assets} は {liabilities} 足す {equity}"
+}

@@ -1,0 +1,17 @@
+{
+  "version": "2022-10-23 19:31:19",
+  "locale": "ko",
+  "setting": "설정",
+  "ok": "확인",
+  "cancel": "취소",
+  "yes": "예",
+  "no": "아니요",
+  "apply": "적용",
+  "select": "선택",
+  "reset": "초기화",
+  "save.completed": "저장 하였습니다.",
+  "welcome": "반갑습니다. {name} 님",
+  "aaaaaaaaaa.bbbbbbbbb.ccccccccc.ddddddddd.eeeeeeee.fffffffffff.gggggggggggg.hhhhhhhhhhhh.iiiiiiiiiii": "긴 문자열",
+  "next.line": "여러\n줄\n입니다",
+  "accounting.rule": "{assets} 은 {liabilities} 더하기 {equity}"
+}

@@ -1,0 +1,17 @@
+{
+  "version": "2022-10-23 19:31:19",
+  "locale": "en",
+  "setting": "setting.",
+  "ok": "ok.",
+  "cancel": "cancel",
+  "yes": "yes",
+  "no": "no",
+  "apply": "apply",
+  "select": "select",
+  "reset": "reset",
+  "save.completed": "save completed",
+  "welcome": "welcome. {name}",
+  "aaaaaaaaaa.bbbbbbbbb.ccccccccc.ddddddddd.eeeeeeee.fffffffffff.gggggggggggg.hhhhhhhhhhhh.iiiiiiiiiii": "long string",
+  "next.line": "The\nmultiple\nlines",
+  "accounting.rule": "{assets} is {liabilities} plus {equity}"
+}

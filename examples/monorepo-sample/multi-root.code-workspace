@@ -1,0 +1,10 @@
+{
+  "folders": [
+    {
+      "path": "internal/mobile"
+    },
+    {
+      "path": "shared"
+    }
+  ]
+}
