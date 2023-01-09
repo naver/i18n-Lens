@@ -21,7 +21,7 @@ export function getConfiguration() {
   const i18nPattern = new RegExp(
     '^' +
       translatorFunctionName +
-      "\\([\\`\\']([\\w\\.\\:]+)[\\`\\']\\,?(\\{.*\\})?\\)",
+      "\\([\\`\\']([\\w\\.\\:\\_\\-]+)[\\`\\']\\,?(\\{.*\\})?\\)",
     'g',
   );
   const translatorFunctionOpener = translatorFunctionName + '(';

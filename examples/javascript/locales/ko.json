@@ -13,5 +13,7 @@
   "welcome": "반갑습니다. {name} 님",
   "aaaaaaaaaa.bbbbbbbbb.ccccccccc.ddddddddd.eeeeeeee.fffffffffff.gggggggggggg.hhhhhhhhhhhh.iiiiiiiiiii": "긴 문자열",
   "next.line": "여러\n줄\n입니다",
-  "accounting.rule": "{assets} 은 {liabilities} 더하기 {equity}"
+  "accounting.rule": "{assets} 은 {liabilities} 더하기 {equity}",
+  "under_line": "밑줄",
+  "hyphen-hyphen": "하이픈"
 }
