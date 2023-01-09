@@ -26,3 +26,7 @@ const foo = 'foo';
 t('common:apply');
 
 t('next.line');
+
+t('under_line');
+
+t('hyphen-hyphen');

@@ -13,5 +13,7 @@
   "welcome": "welcome. {name}",
   "aaaaaaaaaa.bbbbbbbbb.ccccccccc.ddddddddd.eeeeeeee.fffffffffff.gggggggggggg.hhhhhhhhhhhh.iiiiiiiiiii": "long string",
   "next.line": "The\nmultiple\nlines",
-  "accounting.rule": "{assets} is {liabilities} plus {equity}"
+  "accounting.rule": "{assets} is {liabilities} plus {equity}",
+  "under_line": "Under line",
+  "hyphen-hyphen": "hyphen"
 }
