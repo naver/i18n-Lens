@@ -63,7 +63,7 @@ export async function activate(context: vscode.ExtensionContext) {
             vscode.window.activeTextEditor?.document.uri.path;
           return currentDocumentPath?.includes(i18nController.rootPath);
         });
-        if (!i18nController) {
+        if (!i18nController?.i18nList.length) {
           return;
         }
 

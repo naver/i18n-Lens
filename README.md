@@ -22,7 +22,7 @@ You can see the translation data if you hover your mouse on i18n code.
 This extension contributes the following variables to the settings:
 
 - `i18n-Lens.translatorFunctionName`: The name of translator function you use. Default value it `t`
-- `i18n-Lens.localeDirectoryPath`: The path where translation files are located. Default value is `/**/locales`
+- `i18n-Lens.localeDirectoryPath`: The path where translation files are located. Default value is `/locales`
 
 ## Getting Started
 
@@ -36,7 +36,7 @@ Setup options of i18n-Lens.
 {
   ...
   "i18n-Lens.translatorFunctionName": "translate",
-  "i18n-Lens.localeDirectoryPath": "/**/locales"
+  "i18n-Lens.localeDirectoryPath": "/locales"
 }
 ```
 

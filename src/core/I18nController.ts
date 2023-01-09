@@ -41,11 +41,11 @@ class I18n {
     if (key.includes(':')) {
       const [division, subKey] = key.split(':');
       return (
-        this.layeredDictionary?.[division]?.[subKey].replace(/\n/g, '\\n') ||
+        this.layeredDictionary?.[division]?.[subKey]?.replace(/\n/g, '\\n') ||
         '-'
       );
     }
-    return this.dictionary?.[key].replace(/\n/g, '\\n') || '-';
+    return this.dictionary?.[key]?.replace(/\n/g, '\\n') || '-';
   }
 }
 
@@ -117,9 +117,13 @@ class I18nController {
 export async function getI18nControllerList(
   workspaceFolders: readonly vscode.WorkspaceFolder[],
 ) {
+  const rootPathList = workspaceFolders.map(
+    (workspaceFolder) => workspaceFolder.uri.fsPath,
+  );
+  const orderedRootPathList = rootPathList.sort((l, r) => r.length - l.length);
   return await Promise.all(
-    workspaceFolders.map((workspaceFolder) => {
-      return I18nController.init(workspaceFolder.uri.fsPath);
+    orderedRootPathList.map((rootPath) => {
+      return I18nController.init(rootPath);
     }) || [],
   );
 }
