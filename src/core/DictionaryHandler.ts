@@ -25,9 +25,12 @@ class DictionaryHandler {
 
   internationalize(locale: string, key: string) {
     const translatedValue = (() => {
+      // If no delimiter exists, use this.flattenedDictionary to quickly get the translated value.
       if (!key.includes(':')) {
         return (this.flattenedDictionary?.[locale] as Dictionary)?.[key];
       }
+
+      // If delimiter exists, travel this.dictionary to get the translated value.
       return key.split(':').reduce((value: any, key) => {
         return value?.[key];
       }, this.dictionary[locale]);
