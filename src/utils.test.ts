@@ -1,4 +1,8 @@
-import { flattenObject, getDistanceBetweenDirectories } from './utils';
+import {
+  flattenObject,
+  flattenDictionary,
+  getDistanceBetweenDirectories,
+} from './utils';
 
 describe('flattenObject', () => {
   it('does not any change if the object is already flattened', () => {
@@ -42,6 +46,92 @@ describe('flattenObject', () => {
     ).toEqual({
       foo: 'foo',
       qux: 'qux',
+    });
+  });
+});
+
+describe('flattenDictionary', () => {
+  it('does not any change if the object is already flattened', () => {
+    expect(
+      flattenDictionary({
+        ko: {
+          foo: 'foo',
+          bar: 'bar',
+        },
+        en: {
+          foo: 'foo',
+          bar: 'bar',
+        },
+      }),
+    ).toEqual({
+      ko: {
+        foo: 'foo',
+        bar: 'bar',
+      },
+      en: {
+        foo: 'foo',
+        bar: 'bar',
+      },
+    });
+  });
+
+  it('flatten the 2-layer object', () => {
+    expect(
+      flattenDictionary({
+        ko: {
+          foo: 'foo',
+          bar: {
+            baz: 'baz',
+            qux: 'qux',
+          },
+        },
+        en: {
+          foo: 'foo',
+          bar: {
+            baz: 'baz',
+            qux: 'qux',
+          },
+        },
+      }),
+    ).toEqual({
+      ko: {
+        foo: 'foo',
+        baz: 'baz',
+        qux: 'qux',
+      },
+      en: {
+        foo: 'foo',
+        baz: 'baz',
+        qux: 'qux',
+      },
+    });
+  });
+
+  it('flatten the 3-layer object', () => {
+    expect(
+      flattenDictionary({
+        ko: {
+          foo: 'foo',
+          bar: {
+            baz: 'baz',
+          },
+        },
+        en: {
+          bar: {
+            baz: {
+              qux: 'qux',
+            },
+          },
+        },
+      }),
+    ).toEqual({
+      ko: {
+        foo: 'foo',
+        baz: 'baz',
+      },
+      en: {
+        qux: 'qux',
+      },
     });
   });
 });

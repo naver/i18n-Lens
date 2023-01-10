@@ -1,3 +1,5 @@
+import type { Dictionary } from './types';
+
 export function flattenObject(parentObject: object) {
   let object: object = parentObject;
   while (Object.values(object).some((value) => typeof value === 'object')) {
@@ -9,6 +11,18 @@ export function flattenObject(parentObject: object) {
     }, {});
   }
   return object;
+}
+
+export function flattenDictionary(dictionary: Dictionary) {
+  return Object.entries(dictionary).reduce(
+    (flattenedDictionary, [locale, subDictionary]) => {
+      return {
+        ...flattenedDictionary,
+        [locale]: flattenObject(subDictionary as object),
+      };
+    },
+    {},
+  );
 }
 
 export function getDistanceBetweenDirectories(

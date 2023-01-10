@@ -4,7 +4,7 @@
  * Apache License v2.0
  */
 
-import { flattenObject } from '../utils';
+import { flattenDictionary } from '../utils';
 import { Dictionary } from '../types';
 
 class DictionaryHandler {
@@ -20,19 +20,7 @@ class DictionaryHandler {
   }) {
     this.localePath = localePath;
     this.dictionary = dictionary;
-    this.flattenedDictionary = this.flattenDictionary(dictionary);
-  }
-
-  private flattenDictionary(dictionary: Dictionary) {
-    return Object.entries(dictionary).reduce(
-      (flattenedDictionary, [locale, subDictionary]) => {
-        return {
-          ...flattenedDictionary,
-          [locale]: flattenObject(subDictionary as object),
-        };
-      },
-      {},
-    );
+    this.flattenedDictionary = flattenDictionary(dictionary);
   }
 
   internationalize(locale: string, key: string) {
