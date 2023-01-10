@@ -14,70 +14,87 @@ import { Dictionary } from '../types';
 
 class I18nController {
   dictionaryHandlerList: DictionaryHandler[];
-  rootPath: string;
+  selectedDictionaryHandler: DictionaryHandler;
 
-  constructor({
-    dictionaryHandlerList,
-    rootPath,
-  }: {
-    dictionaryHandlerList: DictionaryHandler[];
-    rootPath: string;
-  }) {
+  constructor(dictionaryHandlerList: DictionaryHandler[]) {
     this.dictionaryHandlerList = dictionaryHandlerList;
-    this.rootPath = rootPath;
+    this.selectedDictionaryHandler = dictionaryHandlerList[0];
   }
 
-  static async init(rootPath: string) {
-    const dictionaryHandlerList = await this.getDictionaryHandlerList(rootPath);
-    return new I18nController({ dictionaryHandlerList, rootPath });
+  static async init(workspaceFolders: readonly vscode.WorkspaceFolder[]) {
+    const workspacePathList = workspaceFolders.map(
+      (workspaceFolder) => workspaceFolder.uri.fsPath,
+    );
+    const dictionaryHandlerList = await this.getDictionaryHandlerList(
+      workspacePathList,
+    );
+    return new I18nController(dictionaryHandlerList);
   }
 
-  static async getDictionaryHandlerList(rootPath: string) {
+  static async createDictionary(rootPath: string) {
     const { localeDirectoryPath } = getConfiguration();
     const pattern = [`${rootPath}${localeDirectoryPath}/*`];
-
-    const localePathList = await fg(pattern, {
+    const pathList = await fg(pattern, {
       ignore: ['**/node_modules'],
       onlyFiles: false,
     });
 
-    const dictionaryHandlerList: DictionaryHandler[] = [];
+    let dictionary: Dictionary = {};
+    for (const currentPath of pathList) {
+      const isDirectory = fs.lstatSync(currentPath).isDirectory();
 
-    for (const localePath of localePathList) {
-      const isDirectory = fs.lstatSync(localePath).isDirectory();
-      const { name: locale } = path.parse(localePath);
-      const dictionaryHandler = new DictionaryHandler(locale);
-      if (!isDirectory) {
-        const dictionary = JSON.parse(await fs.readFile(localePath, 'utf-8'));
-        dictionaryHandler.add({ dictionary });
-        dictionaryHandlerList.push(dictionaryHandler);
-      } else {
-        const subPathList = await fg([`${localePath}/*`], {
+      let value;
+      if (isDirectory) {
+        const subPathList = await fg([`${currentPath}/*`], {
           ignore: ['**/node_modules'],
           onlyFiles: true,
         });
+        let subDictionary: Dictionary = {};
         for (const subPath of subPathList) {
-          const { name } = path.parse(subPath);
-          const dictionary = JSON.parse(await fs.readFile(subPath, 'utf-8'));
-          dictionaryHandler.add({
-            division: name,
-            dictionary,
-          });
+          const { name: division } = path.parse(subPath);
+          subDictionary = {
+            ...subDictionary,
+            [division]: JSON.parse(await fs.readFile(subPath, 'utf-8')),
+          };
         }
-        dictionaryHandlerList.push(dictionaryHandler);
+        value = subDictionary;
+      } else {
+        value = JSON.parse(await fs.readFile(currentPath, 'utf-8'));
       }
+
+      const { name } = path.parse(currentPath);
+      dictionary = {
+        ...dictionary,
+        [name]: value,
+      };
     }
-    return dictionaryHandlerList;
+    return dictionary;
+  }
+
+  static async getDictionaryHandlerList(
+    workspacePathList: string[],
+  ): Promise<DictionaryHandler[]> {
+    const dictionary = await Promise.all(
+      workspacePathList.map(async (workspacePath) => {
+        const dictionary = await this.createDictionary(workspacePath);
+        return new DictionaryHandler({
+          dictionary,
+          workspacePath,
+        });
+      }),
+    );
+    return dictionary;
   }
 
   getTooltipContents(i18nKey: string) {
-    const internationalizedStringList = this.dictionaryHandlerList.map(
-      (dictionaryHandler) => {
-        return `|${
-          dictionaryHandler.locale
-        }|${dictionaryHandler.internationalize(i18nKey)}|`;
-      },
-    );
+    const selectedDictionaryHandler = this.selectedDictionaryHandler;
+    const localeList = Object.keys(selectedDictionaryHandler.dictionary);
+    const internationalizedStringList = localeList.map((locale) => {
+      return `|${locale}|${selectedDictionaryHandler.internationalize(
+        locale,
+        i18nKey,
+      )}|`;
+    });
 
     return new vscode.MarkdownString(
       ['|lang|text|', '|:----|----:|', ...internationalizedStringList].join(
@@ -85,20 +102,6 @@ class I18nController {
       ),
     );
   }
-}
-
-export async function getI18nControllerList(
-  workspaceFolders: readonly vscode.WorkspaceFolder[],
-) {
-  const rootPathList = workspaceFolders.map(
-    (workspaceFolder) => workspaceFolder.uri.fsPath,
-  );
-  const orderedRootPathList = rootPathList.sort((l, r) => r.length - l.length);
-  return await Promise.all(
-    orderedRootPathList.map((rootPath) => {
-      return I18nController.init(rootPath);
-    }) || [],
-  );
 }
 
 export default I18nController;

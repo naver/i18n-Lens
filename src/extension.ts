@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 import * as i18nTextHandler from './core/i18nTextHandler';
-import { getI18nControllerList } from './core/I18nController';
+import I18nController from './core/I18nController';
 
 export const EXTENSION_NAME = 'i18n-Lens';
 
@@ -38,16 +38,8 @@ export async function activate(context: vscode.ExtensionContext) {
     return;
   }
 
-  let i18nControllerList = await getI18nControllerList(
+  const i18nController = await I18nController.init(
     vscode.workspace.workspaceFolders ?? [],
-  );
-
-  context.subscriptions.push(
-    vscode.workspace.onDidChangeWorkspaceFolders(async (e) => {
-      i18nControllerList = await getI18nControllerList(
-        vscode.workspace.workspaceFolders ?? [],
-      );
-    }),
   );
 
   vscode.languages.registerHoverProvider(
@@ -58,14 +50,24 @@ export async function activate(context: vscode.ExtensionContext) {
         _position: vscode.Position,
         _token: vscode.CancellationToken,
       ): vscode.ProviderResult<vscode.Hover> {
-        const i18nController = i18nControllerList.find((i18nController) => {
-          const currentDocumentPath =
-            vscode.window.activeTextEditor?.document.uri.path;
-          return currentDocumentPath?.includes(i18nController.rootPath);
-        });
-        if (!i18nController?.i18nList.length) {
+        const selectedDictionaryHandler =
+          i18nController.dictionaryHandlerList.find((dictionaryHandler) => {
+            const currentDocumentPath =
+              vscode.window.activeTextEditor?.document.uri.path;
+            return currentDocumentPath?.includes(
+              dictionaryHandler.workspacePath,
+            );
+          });
+
+        if (
+          !selectedDictionaryHandler ||
+          !Object.keys(i18nController.selectedDictionaryHandler.dictionary)
+            .length
+        ) {
           return;
         }
+
+        i18nController.selectedDictionaryHandler = selectedDictionaryHandler;
 
         const i18nKey = i18nTextHandler.getI18nKeyOnHoveredPosition(
           _document,

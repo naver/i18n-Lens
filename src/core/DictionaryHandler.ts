@@ -4,40 +4,48 @@
  * Apache License v2.0
  */
 
+import { flattenObject } from '../utils';
 import { Dictionary } from '../types';
 
 class DictionaryHandler {
-  locale: string;
-  layeredDictionary: {
-    [division: string]: Dictionary;
-  };
+  workspacePath: string;
   dictionary: Dictionary;
-  constructor(locale: string) {
-    this.locale = locale;
-    this.layeredDictionary = {};
-    this.dictionary = {};
+  flattenedDictionary: Dictionary;
+  constructor({
+    workspacePath,
+    dictionary,
+  }: {
+    workspacePath: string;
+    dictionary: Dictionary;
+  }) {
+    this.workspacePath = workspacePath;
+    this.dictionary = dictionary;
+    this.flattenedDictionary = this.flattenDictionary(dictionary);
   }
-  add({ division, dictionary }: { division?: string; dictionary: Dictionary }) {
-    if (division) {
-      this.layeredDictionary = {
-        ...this.layeredDictionary,
-        [division]: dictionary,
-      };
-    }
-    this.dictionary = {
-      ...this.dictionary,
-      ...dictionary,
-    };
+
+  private flattenDictionary(dictionary: Dictionary) {
+    return Object.entries(dictionary).reduce(
+      (flattenedDictionary, [locale, subDictionary]) => {
+        return {
+          ...flattenedDictionary,
+          [locale]: flattenObject(subDictionary as object),
+        };
+      },
+      {},
+    );
   }
-  internationalize(key: string) {
-    if (key.includes(':')) {
-      const [division, subKey] = key.split(':');
-      return (
-        this.layeredDictionary?.[division]?.[subKey]?.replace(/\n/g, '\\n') ||
-        '-'
-      );
-    }
-    return this.dictionary?.[key]?.replace(/\n/g, '\\n') || '-';
+
+  internationalize(locale: string, key: string) {
+    const translatedValue = (() => {
+      if (!key.includes(':')) {
+        return (this.flattenedDictionary?.[locale] as Dictionary)?.[key];
+      }
+      return key.split(':').reduce((value: any, key) => {
+        return value?.[key];
+      }, this.dictionary[locale]);
+    })();
+
+    return translatedValue?.replace(/\n/g, '\\n') || '-';
   }
 }
 
