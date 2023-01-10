@@ -14,7 +14,7 @@ type Dictionary = {
   [key: string]: string;
 };
 
-class I18n {
+class DictionaryHandler {
   locale: string;
   layeredDictionary: {
     [division: string]: Dictionary;
@@ -50,20 +50,26 @@ class I18n {
 }
 
 class I18nController {
-  i18nList: I18n[];
+  dictionaryHandlerList: DictionaryHandler[];
   rootPath: string;
 
-  constructor({ i18nList, rootPath }: { i18nList: I18n[]; rootPath: string }) {
-    this.i18nList = i18nList;
+  constructor({
+    dictionaryHandlerList,
+    rootPath,
+  }: {
+    dictionaryHandlerList: DictionaryHandler[];
+    rootPath: string;
+  }) {
+    this.dictionaryHandlerList = dictionaryHandlerList;
     this.rootPath = rootPath;
   }
 
   static async init(rootPath: string) {
-    const i18nList = await this.getI18nList(rootPath);
-    return new I18nController({ i18nList, rootPath });
+    const dictionaryHandlerList = await this.getDictionaryHandlerList(rootPath);
+    return new I18nController({ dictionaryHandlerList, rootPath });
   }
 
-  static async getI18nList(rootPath: string) {
+  static async getDictionaryHandlerList(rootPath: string) {
     const { localeDirectoryPath } = getConfiguration();
     const pattern = [`${rootPath}${localeDirectoryPath}/*`];
 
@@ -72,16 +78,16 @@ class I18nController {
       onlyFiles: false,
     });
 
-    const i18nList: I18n[] = [];
+    const dictionaryHandlerList: DictionaryHandler[] = [];
 
     for (const localePath of localePathList) {
       const isDirectory = fs.lstatSync(localePath).isDirectory();
       const { name: locale } = path.parse(localePath);
-      const i18n = new I18n(locale);
+      const dictionaryHandler = new DictionaryHandler(locale);
       if (!isDirectory) {
         const dictionary = JSON.parse(await fs.readFile(localePath, 'utf-8'));
-        i18n.add({ dictionary });
-        i18nList.push(i18n);
+        dictionaryHandler.add({ dictionary });
+        dictionaryHandlerList.push(dictionaryHandler);
       } else {
         const subPathList = await fg([`${localePath}/*`], {
           ignore: ['**/node_modules'],
@@ -90,21 +96,25 @@ class I18nController {
         for (const subPath of subPathList) {
           const { name } = path.parse(subPath);
           const dictionary = JSON.parse(await fs.readFile(subPath, 'utf-8'));
-          i18n.add({
+          dictionaryHandler.add({
             division: name,
             dictionary,
           });
         }
-        i18nList.push(i18n);
+        dictionaryHandlerList.push(dictionaryHandler);
       }
     }
-    return i18nList;
+    return dictionaryHandlerList;
   }
 
   getTooltipContents(i18nKey: string) {
-    const internationalizedStringList = this.i18nList.map((i18n) => {
-      return `|${i18n.locale}|${i18n.internationalize(i18nKey)}|`;
-    });
+    const internationalizedStringList = this.dictionaryHandlerList.map(
+      (dictionaryHandler) => {
+        return `|${
+          dictionaryHandler.locale
+        }|${dictionaryHandler.internationalize(i18nKey)}|`;
+      },
+    );
 
     return new vscode.MarkdownString(
       ['|lang|text|', '|:----|----:|', ...internationalizedStringList].join(
