@@ -1,7 +1,7 @@
 {
   "name": "i18n-Lens",
   "displayName": "i18n-Lens",
-  "description": "I18n-Lens is a VS Code extension which helps you develop with i18n library.",
+  "description": "i18n-Lens is a VS Code extension which helps you develop with i18n library.",
   "publisher": "naver-vision-application-fe",
   "repository": {
     "type": "git",
