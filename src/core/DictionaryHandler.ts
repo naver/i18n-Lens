@@ -8,17 +8,17 @@ import { flattenObject } from '../utils';
 import { Dictionary } from '../types';
 
 class DictionaryHandler {
-  workspacePath: string;
+  localePath: string;
   dictionary: Dictionary;
   flattenedDictionary: Dictionary;
   constructor({
-    workspacePath,
+    localePath,
     dictionary,
   }: {
-    workspacePath: string;
+    localePath: string;
     dictionary: Dictionary;
   }) {
-    this.workspacePath = workspacePath;
+    this.localePath = localePath;
     this.dictionary = dictionary;
     this.flattenedDictionary = this.flattenDictionary(dictionary);
   }

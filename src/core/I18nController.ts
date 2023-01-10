@@ -8,6 +8,7 @@ import * as vscode from 'vscode';
 import fg from 'fast-glob';
 import path from 'path';
 import fs from 'fs-extra';
+import _ from 'lodash';
 import DictionaryHandler from './DictionaryHandler';
 import { getConfiguration } from '../extension';
 import { getDistanceBetweenDirectories } from '../utils';
@@ -23,19 +24,36 @@ class I18nController {
   }
 
   static async init(workspaceFolders: readonly vscode.WorkspaceFolder[]) {
-    const workspacePathList = workspaceFolders.map(
-      (workspaceFolder) => workspaceFolder.uri.fsPath,
-    );
+    const localePathSet = await this.getLocalePathSet(workspaceFolders);
     const dictionaryHandlerList = await this.getDictionaryHandlerList(
-      workspacePathList,
+      localePathSet,
     );
     return new I18nController(dictionaryHandlerList);
   }
 
-  static async createDictionary(rootPath: string) {
+  static async getLocalePathSet(
+    workspaceFolders: readonly vscode.WorkspaceFolder[],
+  ): Promise<Set<string>> {
     const { localeDirectoryPath } = getConfiguration();
-    const pattern = [`${rootPath}${localeDirectoryPath}/*`];
-    const pathList = await fg(pattern, {
+    const workspacePathList = workspaceFolders.map(
+      (workspaceFolder) => workspaceFolder.uri.fsPath,
+    );
+    const localePathList = _.flatten(
+      await Promise.all(
+        workspacePathList.map((workspacePath) => {
+          const pattern = [`${workspacePath}${localeDirectoryPath}`];
+          return fg(pattern, {
+            ignore: ['**/node_modules'],
+            onlyFiles: false,
+          });
+        }),
+      ),
+    );
+    return new Set(localePathList);
+  }
+
+  static async createDictionary(parentPath: string): Promise<Dictionary> {
+    const pathList = await fg([`${parentPath}/*`], {
       ignore: ['**/node_modules'],
       onlyFiles: false,
     });
@@ -46,19 +64,7 @@ class I18nController {
 
       let value;
       if (isDirectory) {
-        const subPathList = await fg([`${currentPath}/*`], {
-          ignore: ['**/node_modules'],
-          onlyFiles: true,
-        });
-        let subDictionary: Dictionary = {};
-        for (const subPath of subPathList) {
-          const { name: division } = path.parse(subPath);
-          subDictionary = {
-            ...subDictionary,
-            [division]: JSON.parse(await fs.readFile(subPath, 'utf-8')),
-          };
-        }
-        value = subDictionary;
+        value = await this.createDictionary(currentPath);
       } else {
         value = JSON.parse(await fs.readFile(currentPath, 'utf-8'));
       }
@@ -73,14 +79,14 @@ class I18nController {
   }
 
   static async getDictionaryHandlerList(
-    workspacePathList: string[],
+    localePathSet: Set<string>,
   ): Promise<DictionaryHandler[]> {
     const dictionary = await Promise.all(
-      workspacePathList.map(async (workspacePath) => {
-        const dictionary = await this.createDictionary(workspacePath);
+      Array.from(localePathSet).map(async (localePath) => {
+        const dictionary = await this.createDictionary(localePath);
         return new DictionaryHandler({
+          localePath,
           dictionary,
-          workspacePath,
         });
       }),
     );
@@ -96,7 +102,7 @@ class I18nController {
     for (const dictionaryHandler of this.dictionaryHandlerList) {
       const distance = getDistanceBetweenDirectories(
         uriPath,
-        dictionaryHandler.workspacePath,
+        dictionaryHandler.localePath,
       );
       if (distance < minimumDistance) {
         minimumDistance = distance;
