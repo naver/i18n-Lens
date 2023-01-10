@@ -51,13 +51,9 @@ export async function activate(context: vscode.ExtensionContext) {
         _token: vscode.CancellationToken,
       ): vscode.ProviderResult<vscode.Hover> {
         const selectedDictionaryHandler =
-          i18nController.dictionaryHandlerList.find((dictionaryHandler) => {
-            const currentDocumentPath =
-              vscode.window.activeTextEditor?.document.uri.path;
-            return currentDocumentPath?.includes(
-              dictionaryHandler.workspacePath,
-            );
-          });
+          i18nController.setClosestDictionaryHandler(
+            vscode.window.activeTextEditor?.document.uri.path,
+          );
 
         if (
           !selectedDictionaryHandler ||
@@ -66,8 +62,6 @@ export async function activate(context: vscode.ExtensionContext) {
         ) {
           return;
         }
-
-        i18nController.selectedDictionaryHandler = selectedDictionaryHandler;
 
         const i18nKey = i18nTextHandler.getI18nKeyOnHoveredPosition(
           _document,

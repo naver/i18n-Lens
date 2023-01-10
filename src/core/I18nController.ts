@@ -10,6 +10,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import DictionaryHandler from './DictionaryHandler';
 import { getConfiguration } from '../extension';
+import { getDistanceBetweenDirectories } from '../utils';
 import { Dictionary } from '../types';
 
 class I18nController {
@@ -84,6 +85,25 @@ class I18nController {
       }),
     );
     return dictionary;
+  }
+
+  setClosestDictionaryHandler(uriPath?: string) {
+    if (!uriPath) {
+      return;
+    }
+    const MAX_DISTANCE = 999999;
+    let minimumDistance = MAX_DISTANCE;
+    for (const dictionaryHandler of this.dictionaryHandlerList) {
+      const distance = getDistanceBetweenDirectories(
+        uriPath,
+        dictionaryHandler.workspacePath,
+      );
+      if (distance < minimumDistance) {
+        minimumDistance = distance;
+        this.selectedDictionaryHandler = dictionaryHandler;
+      }
+    }
+    return this.selectedDictionaryHandler;
   }
 
   getTooltipContents(i18nKey: string) {
