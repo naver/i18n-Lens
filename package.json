@@ -37,7 +37,7 @@
         "i18n-Lens.localeDirectoryPath": {
           "type": "string",
           "description": "Language translation file directory path",
-          "default": "/locales"
+          "default": "/**/locales"
         }
       }
     }
