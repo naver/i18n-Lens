@@ -8,46 +8,9 @@ import * as vscode from 'vscode';
 import fg from 'fast-glob';
 import path from 'path';
 import fs from 'fs-extra';
+import DictionaryHandler from './DictionaryHandler';
 import { getConfiguration } from '../extension';
-
-type Dictionary = {
-  [key: string]: string;
-};
-
-class DictionaryHandler {
-  locale: string;
-  layeredDictionary: {
-    [division: string]: Dictionary;
-  };
-  dictionary: Dictionary;
-  constructor(locale: string) {
-    this.locale = locale;
-    this.layeredDictionary = {};
-    this.dictionary = {};
-  }
-  add({ division, dictionary }: { division?: string; dictionary: Dictionary }) {
-    if (division) {
-      this.layeredDictionary = {
-        ...this.layeredDictionary,
-        [division]: dictionary,
-      };
-    }
-    this.dictionary = {
-      ...this.dictionary,
-      ...dictionary,
-    };
-  }
-  internationalize(key: string) {
-    if (key.includes(':')) {
-      const [division, subKey] = key.split(':');
-      return (
-        this.layeredDictionary?.[division]?.[subKey]?.replace(/\n/g, '\\n') ||
-        '-'
-      );
-    }
-    return this.dictionary?.[key]?.replace(/\n/g, '\\n') || '-';
-  }
-}
+import { Dictionary } from '../types';
 
 class I18nController {
   dictionaryHandlerList: DictionaryHandler[];
