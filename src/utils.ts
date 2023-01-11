@@ -1,3 +1,9 @@
+/**
+ * i18n-Lens
+ * Copyright (c) 2022-present NAVER Corp.
+ * Apache License v2.0
+ */
+
 import type { Dictionary } from './types';
 
 export function flattenObject(parentObject: object) {
