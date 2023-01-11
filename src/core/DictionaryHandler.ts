@@ -5,7 +5,7 @@
  */
 
 import { flattenDictionary } from '../utils';
-import { Dictionary } from '../types';
+import type { Dictionary } from '../types';
 
 class DictionaryHandler {
   localePath: string;
@@ -23,17 +23,23 @@ class DictionaryHandler {
     this.flattenedDictionary = flattenDictionary(dictionary);
   }
 
-  internationalize(locale: string, key: string) {
-    const translatedValue = (() => {
+  internationalize(locale: string, key: string): string {
+    const translatedValue: string = (() => {
       // If no delimiter exists, use this.flattenedDictionary to quickly get the translated value.
       if (!key.includes(':')) {
-        return (this.flattenedDictionary?.[locale] as Dictionary)?.[key];
+        const localeFlattenedDictionary = this.flattenedDictionary[
+          locale
+        ] as Dictionary;
+        return localeFlattenedDictionary?.[key] as string;
       }
 
       // If delimiter exists, travel this.dictionary to get the translated value.
-      return key.split(':').reduce((value: any, key) => {
-        return value?.[key];
-      }, this.dictionary[locale]);
+      return key.split(':').reduce((value, subKey) => {
+        if (typeof value === 'string') {
+          return value;
+        }
+        return value?.[subKey];
+      }, this.dictionary[locale]) as string;
     })();
 
     return translatedValue?.replace(/\n/g, '\\n') || '-';

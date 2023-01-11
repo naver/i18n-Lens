@@ -9,7 +9,7 @@ import type { Dictionary } from './types';
 export function flattenObject(parentObject: object) {
   let object: object = parentObject;
   while (Object.values(object).some((value) => typeof value === 'object')) {
-    object = Object.entries(object).reduce((obj: any, [key, subObject]) => {
+    object = Object.entries(object).reduce((obj: object, [key, subObject]) => {
       if (typeof subObject === 'object') {
         return { ...obj, ...subObject };
       }
@@ -19,7 +19,7 @@ export function flattenObject(parentObject: object) {
   return object;
 }
 
-export function flattenDictionary(dictionary: Dictionary) {
+export function flattenDictionary(dictionary: Dictionary): Dictionary {
   return Object.entries(dictionary).reduce(
     (flattenedDictionary, [locale, subDictionary]) => {
       return {
