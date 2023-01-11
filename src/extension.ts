@@ -50,13 +50,12 @@ export async function activate(context: vscode.ExtensionContext) {
         _position: vscode.Position,
         _token: vscode.CancellationToken,
       ): vscode.ProviderResult<vscode.Hover> {
-        const selectedDictionaryHandler =
-          i18nController.setClosestDictionaryHandler(
-            vscode.window.activeTextEditor?.document.uri.path,
-          );
+        i18nController.setClosestDictionaryHandler(
+          vscode.window.activeTextEditor?.document.uri.path,
+        );
 
         if (
-          !selectedDictionaryHandler ||
+          !i18nController.selectedDictionaryHandler ||
           !Object.keys(i18nController.selectedDictionaryHandler.dictionary)
             .length
         ) {

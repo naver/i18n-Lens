@@ -12,7 +12,7 @@ import _ from 'lodash';
 import DictionaryHandler from './DictionaryHandler';
 import { getConfiguration } from '../extension';
 import { getDistanceBetweenDirectories } from '../utils';
-import { Dictionary } from '../types';
+import type { Dictionary } from '../types';
 
 class I18nController {
   dictionaryHandlerList: DictionaryHandler[];
@@ -62,7 +62,7 @@ class I18nController {
     for (const currentPath of pathList) {
       const isDirectory = fs.lstatSync(currentPath).isDirectory();
 
-      let value;
+      let value: Dictionary;
       if (isDirectory) {
         value = await this.createDictionary(currentPath);
       } else {
@@ -93,7 +93,7 @@ class I18nController {
     return dictionary;
   }
 
-  setClosestDictionaryHandler(uriPath?: string) {
+  setClosestDictionaryHandler(uriPath?: string): void {
     if (!uriPath) {
       return;
     }
@@ -109,10 +109,9 @@ class I18nController {
         this.selectedDictionaryHandler = dictionaryHandler;
       }
     }
-    return this.selectedDictionaryHandler;
   }
 
-  getTooltipContents(i18nKey: string) {
+  getTooltipContents(i18nKey: string): vscode.MarkdownString {
     const selectedDictionaryHandler = this.selectedDictionaryHandler;
     const localeList = Object.keys(selectedDictionaryHandler.dictionary);
     const internationalizedStringList = localeList.map((locale) => {
