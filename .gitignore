@@ -1,5 +1,8 @@
 # Dependency directories
 node_modules/
 
+# test output
+out
+
 # generate output
 dist

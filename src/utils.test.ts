@@ -1,3 +1,4 @@
+import assert from 'assert';
 import {
   flattenObject,
   flattenDictionary,
@@ -6,19 +7,20 @@ import {
 
 describe('flattenObject', () => {
   it('does not any change if the object is already flattened', () => {
-    expect(
+    assert.deepEqual(
       flattenObject({
         foo: 'foo',
         bar: 'bar',
       }),
-    ).toEqual({
-      foo: 'foo',
-      bar: 'bar',
-    });
+      {
+        foo: 'foo',
+        bar: 'bar',
+      },
+    );
   });
 
   it('flatten the 2-layer object', () => {
-    expect(
+    assert.deepEqual(
       flattenObject({
         foo: 'foo',
         bar: {
@@ -26,15 +28,16 @@ describe('flattenObject', () => {
           qux: 'qux',
         },
       }),
-    ).toEqual({
-      foo: 'foo',
-      baz: 'baz',
-      qux: 'qux',
-    });
+      {
+        foo: 'foo',
+        baz: 'baz',
+        qux: 'qux',
+      },
+    );
   });
 
   it('flatten the 3-layer object', () => {
-    expect(
+    assert.deepEqual(
       flattenObject({
         foo: 'foo',
         bar: {
@@ -43,16 +46,17 @@ describe('flattenObject', () => {
           },
         },
       }),
-    ).toEqual({
-      foo: 'foo',
-      qux: 'qux',
-    });
+      {
+        foo: 'foo',
+        qux: 'qux',
+      },
+    );
   });
 });
 
 describe('flattenDictionary', () => {
   it('does not any change if the object is already flattened', () => {
-    expect(
+    assert.deepEqual(
       flattenDictionary({
         ko: {
           foo: 'foo',
@@ -63,20 +67,21 @@ describe('flattenDictionary', () => {
           bar: 'bar',
         },
       }),
-    ).toEqual({
-      ko: {
-        foo: 'foo',
-        bar: 'bar',
+      {
+        ko: {
+          foo: 'foo',
+          bar: 'bar',
+        },
+        en: {
+          foo: 'foo',
+          bar: 'bar',
+        },
       },
-      en: {
-        foo: 'foo',
-        bar: 'bar',
-      },
-    });
+    );
   });
 
   it('flatten the 2-layer object', () => {
-    expect(
+    assert.deepEqual(
       flattenDictionary({
         ko: {
           foo: 'foo',
@@ -93,22 +98,23 @@ describe('flattenDictionary', () => {
           },
         },
       }),
-    ).toEqual({
-      ko: {
-        foo: 'foo',
-        baz: 'baz',
-        qux: 'qux',
+      {
+        ko: {
+          foo: 'foo',
+          baz: 'baz',
+          qux: 'qux',
+        },
+        en: {
+          foo: 'foo',
+          baz: 'baz',
+          qux: 'qux',
+        },
       },
-      en: {
-        foo: 'foo',
-        baz: 'baz',
-        qux: 'qux',
-      },
-    });
+    );
   });
 
   it('flatten the 3-layer object', () => {
-    expect(
+    assert.deepEqual(
       flattenDictionary({
         ko: {
           foo: 'foo',
@@ -124,58 +130,64 @@ describe('flattenDictionary', () => {
           },
         },
       }),
-    ).toEqual({
-      ko: {
-        foo: 'foo',
-        baz: 'baz',
+      {
+        ko: {
+          foo: 'foo',
+          baz: 'baz',
+        },
+        en: {
+          qux: 'qux',
+        },
       },
-      en: {
-        qux: 'qux',
-      },
-    });
+    );
   });
 });
 
 describe('getDistanceBetweenDirectories', () => {
   it('returns 0 if two directories are the same', () => {
-    expect(getDistanceBetweenDirectories('/', '/')).toBe(0);
-    expect(
+    assert.equal(getDistanceBetweenDirectories('/', '/'), 0);
+    assert.equal(
       getDistanceBetweenDirectories(
         '/Users/user/Desktop',
         '/Users/user/Desktop',
       ),
-    ).toBe(0);
+      0,
+    );
   });
 
   it('returns depth of one directory if depth of the other directory is zero', () => {
-    expect(getDistanceBetweenDirectories('/', '/Users/user/Desktop')).toBe(3);
-    expect(getDistanceBetweenDirectories('', '/Users/user/Desktop')).toBe(3);
+    assert.equal(getDistanceBetweenDirectories('/', '/Users/user/Desktop'), 3);
+    assert.equal(getDistanceBetweenDirectories('', '/Users/user/Desktop'), 3);
   });
 
   it('returns distance between two directories if one is included in the other', () => {
-    expect(
+    assert.equal(
       getDistanceBetweenDirectories(
         '/Users/user/Desktop/Project',
         '/Users/user/Desktop/',
       ),
-    ).toBe(1);
-    expect(getDistanceBetweenDirectories('/Users/user/Desktop', '/Users')).toBe(
+      1,
+    );
+    assert.equal(
+      getDistanceBetweenDirectories('/Users/user/Desktop', '/Users'),
       2,
     );
   });
 
   it('returns distance between two directories', () => {
-    expect(
+    assert.equal(
       getDistanceBetweenDirectories(
         '/Users/user/Desktop/Project',
         '/Users/user/Desktop/Data',
       ),
-    ).toBe(2);
-    expect(
+      2,
+    );
+    assert.equal(
       getDistanceBetweenDirectories(
         '/Users/user/Desktop/Project/i18n-Lens',
         '/Users/user/Desktop/Data',
       ),
-    ).toBe(3);
+      3,
+    );
   });
 });
