@@ -1,13 +1,13 @@
 {
   "name": "i18n-Lens",
   "displayName": "i18n-Lens",
-  "description": "I18n-Lens is a VS Code extension which helps you develop with i18n library.",
+  "description": "i18n-Lens is a VS Code extension which helps you develop with i18n library.",
   "publisher": "naver-vision-application-fe",
   "repository": {
     "type": "git",
     "url": "https://github.com/naver/i18n-Lens"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.72.0"
   },
@@ -49,12 +49,16 @@
     "package": "webpack --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "lint": "eslint",
+    "test": "mocha",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "npm run lint"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
+    "@types/lodash": "^4.14.191",
     "@types/mocha": "^10.0.0",
     "@types/node": "16.x",
     "@types/vscode": "^1.72.0",
@@ -64,15 +68,19 @@
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
     "mocha": "^10.0.0",
     "prettier": "^2.7.1",
     "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.1",
     "typescript": "^4.8.4",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
     "fast-glob": "^3.2.12",
-    "fs-extra": "^10.1.0"
+    "fs-extra": "^10.1.0",
+    "lodash": "^4.17.21"
   }
 }

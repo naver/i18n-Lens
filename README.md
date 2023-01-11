@@ -42,7 +42,7 @@ Setup options of i18n-Lens.
 
 (Since there are default settings attributes, you do not have to set them all if you don't need it.)
 
-Then, locate the translation files into `/locales` directory
+Then, locate the translation files into `/**/locales` directory
 
 You can use both pattern below
 

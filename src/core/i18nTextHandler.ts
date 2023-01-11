@@ -10,15 +10,15 @@ import { getConfiguration } from '../extension';
 export function getI18nKeyOnHoveredPosition(
   _document: vscode.TextDocument,
   _position: vscode.Position,
-) {
+): string | null {
   const range = getRangeOfI18nText(_document, _position);
   if (!range) {
-    return;
+    return null;
   }
 
   const i18nKey = getI18nKeyInRange(_document, range);
   if (!i18nKey) {
-    return;
+    return null;
   }
 
   return i18nKey;
@@ -27,12 +27,10 @@ export function getI18nKeyOnHoveredPosition(
 function getRangeOfI18nText(
   _document: vscode.TextDocument,
   _position: vscode.Position,
-) {
-  const { i18nPattern } = getConfiguration();
-
+): vscode.Range | null {
   const i18nOpeningPosition = getI18nOpeningPosition(_document, _position);
   if (!i18nOpeningPosition) {
-    return;
+    return null;
   }
 
   const i18nClosingPosition = getI18nClosingPosition(
@@ -43,7 +41,7 @@ function getRangeOfI18nText(
     !i18nClosingPosition ||
     comparePosition(i18nClosingPosition, _position) <= 0
   ) {
-    return;
+    return null;
   }
 
   return new vscode.Range(i18nOpeningPosition, i18nClosingPosition);
@@ -52,11 +50,11 @@ function getRangeOfI18nText(
 function getI18nKeyInRange(
   _document: vscode.TextDocument,
   range: vscode.Range,
-) {
+): string | null {
   const { i18nPattern } = getConfiguration();
 
   const targetWord = _document.getText(range).replace(/\s/g, '');
-  const i18nKey = i18nPattern.exec(targetWord)?.[1];
+  const i18nKey = i18nPattern.exec(targetWord)?.[1] ?? null;
   return i18nKey;
 }
 
@@ -125,7 +123,7 @@ function getI18nClosingPosition(
 function comparePosition(
   leftP: vscode.Position,
   rightP: vscode.Position,
-): Number {
+): number {
   if (leftP.line !== rightP.line) {
     return leftP.line - rightP.line;
   }

@@ -25,4 +25,10 @@ const foo = 'foo';
 
 t('common:apply');
 
+t('foo:bar:apply');
+
 t('next.line');
+
+t('under_line');
+
+t('hyphen-hyphen');

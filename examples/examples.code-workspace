@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "name": "example root",
+      "path": "."
+    },
+    {
+      "name": "mobile",
+      "path": "monorepo-sample/internal/mobile"
+    },
+    {
+      "name": "pc",
+      "path": "monorepo-sample/internal/pc"
+    },
+    {
+      "name": "shared",
+      "path": "monorepo-sample/shared"
+    }
+  ]
+}
