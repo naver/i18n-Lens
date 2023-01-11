@@ -28,8 +28,6 @@ function getRangeOfI18nText(
   _document: vscode.TextDocument,
   _position: vscode.Position,
 ) {
-  const { i18nPattern } = getConfiguration();
-
   const i18nOpeningPosition = getI18nOpeningPosition(_document, _position);
   if (!i18nOpeningPosition) {
     return;
