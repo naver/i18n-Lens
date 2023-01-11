@@ -1,0 +1,16 @@
+name: i18n-Lens CI
+on: [pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '18.7.0'
+    - name: Run Npm 
+      run: npm install
+    - name: Run tests
+      run: npm test
